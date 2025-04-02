@@ -1,0 +1,66 @@
+version: '3.8' # Utilisez une version récente de la spécification Compose
+
+services:
+  # --- Service DNSCrypt-Proxy ---
+  dnscrypt-proxy:
+    # Utilise une image populaire. Pour la stabilité, envisagez de spécifier une version exacte, ex: klutchell/dnscrypt-proxy:2.1.5
+    image: klutchell/dnscrypt-proxy:latest
+    container_name: dnscrypt # Nom pratique pour le conteneur
+    restart: unless-stopped # Redémarre automatiquement sauf si arrêté manuellement
+    volumes:
+      # Monte le fichier de configuration local dans le conteneur (lecture seule).
+      - ./dnscrypt-proxy.toml:/config/dnscrypt-proxy.toml:ro
+    # Pas de ports exposés sur l'hôte : Seul AdGuard y accède via le réseau interne dns-network.
+    networks:
+      - dns-network # Attache le service à notre réseau défini plus bas
+    # Optionnel : Limiter les ressources si nécessaire
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 128M
+
+  # --- Service AdGuard Home ---
+  adguardhome:
+    # Utilise l'image officielle. Pour la stabilité, envisagez de spécifier une version exacte, ex: adguard/adguardhome:v0.107.45
+    image: adguard/adguardhome:latest
+    container_name: adguard # Nom pratique pour le conteneur
+    restart: unless-stopped # Redémarre automatiquement
+    ports:
+      # Port DNS standard (TCP et UDP) exposé sur l'IP de votre machine hôte
+      - "53:53/tcp"
+      - "53:53/udp"
+      # Port pour l'interface web d'AdGuard (accessible via http://<votre-ip-hôte>:3000)
+      - "3000:3000/tcp"
+      # --- Ports Optionnels ---
+      # Décommentez si vous configurez AdGuard pour servir directement en DoT (DNS over TLS)
+      # - "853:853/tcp"
+      # Décommentez si vous configurez AdGuard pour servir directement en DoH (DNS over HTTPS).
+      # Attention: Le port 443 peut entrer en conflit si un autre serveur web tourne sur l'hôte.
+      # - "443:443/tcp"
+      # - "443:443/udp" # Pour HTTP/3 (QUIC)
+    volumes:
+      # Stockage persistant pour les données de travail (logs, stats, base de données des requêtes)
+      - ./adguard_work:/opt/adguardhome/work
+      # Stockage persistant pour la configuration (AdGuardHome.yaml, filtres, règles)
+      - ./adguard_conf:/opt/adguardhome/conf
+    # Dépendance : S'assure que dnscrypt-proxy est démarré et sain (si healthcheck défini) avant AdGuard
+    depends_on:
+      - dnscrypt-proxy
+    networks:
+      - dns-network # Attache le service à notre réseau défini plus bas
+    # Optionnel : Limiter les ressources si nécessaire
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 256M
+
+# --- Définition des Réseaux ---
+networks:
+  dns-network: # Nom du réseau interne utilisé par les conteneurs pour communiquer
+    driver: bridge # Type de réseau par défaut, suffisant ici
+
+# --- Volumes (Définis implicitement par les chemins relatifs dans 'volumes' des services) ---
+# Pas besoin de les définir ici si vous utilisez les chemins relatifs comme ci-dessus.
+# volumes:
+#   adguard_work:
+#   adguard_conf:

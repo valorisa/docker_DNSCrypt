@@ -1,0 +1,15 @@
+# AdGuard Home persistent data folders
+adguard_work/
+adguard_conf/
+
+# Log files potentially created outside containers
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Docker specific cache/temp
+.dockerignore

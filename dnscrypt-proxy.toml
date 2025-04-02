@@ -1,0 +1,37 @@
+# Écoute sur toutes les interfaces réseau *à l'intérieur* du conteneur, sur le port 5353.
+# Ceci est nécessaire pour qu'AdGuard Home (dans un autre conteneur mais sur le même réseau Docker)
+# puisse joindre ce service. Ne pas utiliser 127.0.0.1 ici.
+listen_addresses = ['0.0.0.0:5353']
+
+# Liste des serveurs DNSCrypt/DoH à utiliser en amont.
+# Choisissez vos préférés. Voir la liste complète sur le site de dnscrypt-proxy.
+# Exemples : cloudflare, google, quad9-dnscrypt-ip4-filter-pri, adguard-dns, etc.
+server_names = ['cloudflare', 'google', 'quad9-dnscrypt-ip4-filter-pri']
+
+# Nombre maximum de clients simultanés
+max_clients = 250
+
+# Utiliser les serveurs IPv4
+ipv4_servers = true
+# Désactiver les serveurs IPv6 si non nécessaire ou non supporté par votre réseau
+ipv6_servers = false
+
+# Activer les protocoles DNSCrypt et DoH
+dnscrypt_servers = true
+doh_servers = true
+
+# Exiger que les serveurs supportent DNSSEC (recommandé)
+require_dnssec = true
+# Exiger que les serveurs ne conservent pas les logs (si possible)
+require_no_log = true
+# Exiger que les serveurs ne filtrent PAS les requêtes (le filtrage sera fait par AdGuard Home)
+require_nofilter = true
+
+# Pas de log_file : Les logs iront vers stdout/stderr, gérable par 'docker-compose logs'
+# log_level = 0 # 0:info, 1:warn, 2:error, 3:fatal
+
+# Options de cache (facultatif, AdGuard a aussi son propre cache)
+# cache = true
+# cache_size = 4096
+# cache_neg_ttl = 60
+# cache_min_ttl = 600
