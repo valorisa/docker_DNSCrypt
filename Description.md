@@ -1,4 +1,3 @@
----
 ### **Description du projet :**
 **docker_DNSCrypt** est un projet qui utilise Docker pour déployer un serveur DNS sécurisé basé sur **DNSCrypt**. 
 Il permet de chiffrer et d'authentifier les requêtes DNS, garantissant ainsi la confidentialité et la sécurité des communications DNS. 
