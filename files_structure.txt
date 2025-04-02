@@ -1,15 +1,12 @@
-Structure du projet :
-└── docker-dns/              (ou le nom de votre dossier projet)
-    ├── .gitignore           (Nouveau fichier)
-    ├── README.md            (Mis à jour)
-    ├── dnscrypt-proxy.toml  (Corrigé)
-    ├── docker-compose.yml   (Mis à jour)
-    ├── files_structure.txt  (Mis à jour)
-    ├── adguard_work/        (Répertoire vide à créer pour les données AdGuard)
-    └── adguard_conf/        (Répertoire vide à créer pour la config AdGuard)
+.
+├── .git
+├── .gitignore
+├── License
+├── README.md
+├── adguard_conf
+├── adguard_work
+├── dnscrypt-proxy.toml
+├── docker-compose.yml
+└── files_structure.txt
 
-Fichiers supprimés :
-- AdGuardHome.yaml
-- installation_from_Windows.md
-
-Total : 5 fichiers et 2 répertoires (vides initialement)
+4 directories, 6 files
